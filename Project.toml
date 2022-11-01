@@ -1,0 +1,4 @@
+name = "Merchant"
+uuid = "fdc79b94-dadd-447b-a012-7aa7d86d1e7d"
+authors = ["Elzair <elzairthesorcerer@gmail.com>"]
+version = "0.1.0"
