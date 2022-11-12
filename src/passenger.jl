@@ -192,7 +192,7 @@ Basic: 32 ["Diplomat on a Mission", "Refugee - Political", "Out to See the Unive
 Low: 39 nothing
 ```
 """
-function seekAllPassengers(checkEffect::Integer, maxStewardSkill::Integer, source::World, destination::World, distance::Integer, noReturn=true, excitingPct = 0.5, passengerPct = 0.2, userDM = 0)
+function seekAllPassengers(checkEffect, maxStewardSkill, source::World, destination::World, distance, noReturn=true, excitingPct = 0.5, passengerPct = 0.2, userDM = 0)
     (numHP, excHP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "High", userDM)
     (numMP, excMP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Middle", userDM)
     (numBP, excBP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Basic", userDM)

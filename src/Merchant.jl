@@ -1,7 +1,5 @@
 module Merchant
 
-#greet() = print("Hello World!")
-
 include("worldinfo.jl")
 include("freight.jl")
 include("passenger.jl")
@@ -14,4 +12,4 @@ using .WorldInfo: World
 
 export World, UWP, seekAllPassengers, seekAllFreight, seekGoods
 
-end # module Merchant
+end
