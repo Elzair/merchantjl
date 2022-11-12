@@ -160,10 +160,11 @@ function seekPassengers(checkEffect, maxStewardSkill, source::World, destination
     numPassengers = dice(val, 6)
     
     (numPassengers, getExcitingPassengers(numPassengers))
+    # numPassengers
 end
 
 """
-    seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, passenger [, userDM, excitingPct, passengerPct])
+    seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, passenger [, noReturn, userDM, excitingPct, passengerPct])
 
 Seek out passengers of a certain type for a certain route
 
@@ -173,6 +174,7 @@ Seek out passengers of a certain type for a certain route
 - `source::World` where the passengers are now
 - `destination::World` where the passengers want to go
 - `distance` the distance (in parsecs)
+- `noReturn`: whether to return a `Dict` with the freight or print it
 - `excitingPct` the percent chance of generating 'exciting' passengers
 - `passengerPct` the percentage of passengers who are 'exciting'
 - `userDM` a Referee-specified Dice Modifier to add to the check for passengers
@@ -180,20 +182,26 @@ Seek out passengers of a certain type for a certain route
 # Example
 ```julia-repl
 julia> seekAllPassengers(2, 2, World("A434934-F"), World("A560565-8"), 2)
-Dict{String, Tuple{Int64, Any}} with 4 entries:
-  "Low"    => (42, ["Spy", "Scientist", "Possesses Something Dangerous or Illegal", "On the Run", "Causes Trouble", "Rich Noble - Complains a Lot", "Spy", "Bounty Hunter"])
-  "Middle" => (45, nothing)
-  "High"   => (17, ["Mercenary", "Gamber", "Refugee - Political"])
-  "Basic"  => (37, ["Wanderer", "Thief or Other Criminal", "Rich Noble - Eccentric", "Gamber", "Refugee - Political", "Alien", "Entertainer"])
+High: #12 nothing
+Middle: 45 ["Wants to Stowaway or Join the Crew", "Bounty Hunter", "Wide-Eyed Yokel", "Gamber", "Alien", "Wanderer", "Mercenary", "Engineer", "Refugee - Economic"]
+Basic: 32 ["Diplomat on a Mission", "Refugee - Political", "Out to See the Universe", "Ex-Scout", "Corporate Executive", "Claustrophobic"]
+Low: 39 nothing
 ```
 """
-function seekAllPassengers(checkEffect, maxStewardSkill, source::World, destination::World, distance, excitingPct = 0.5, passengerPct = 0.2, userDM = 0)
-    highPassengers = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "High", userDM)
-    middlePassengers = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Middle", userDM)
-    basicPassengers = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Basic", userDM)
-    lowPassengers = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Low", userDM)
+function seekAllPassengers(checkEffect, maxStewardSkill, source::World, destination::World, distance, noReturn=true, excitingPct = 0.5, passengerPct = 0.2, userDM = 0)
+    (numHP, excHP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "High", userDM)
+    (numMP, excMP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Middle", userDM)
+    (numBP, excBP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Basic", userDM)
+    (numLP, excLP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Low", userDM)
 
-    Dict("High" => highPassengers, "Middle" => middlePassengers, "Basic" => basicPassengers, "Low" => lowPassengers)
+    if noReturn
+        println("High: #", numHP, " ", excHP)
+        println("Middle: ", numMP, " ", excMP)
+        println("Basic: ", numBP, " ", excBP)
+        println("Low: ", numLP, " ", excLP)
+    else
+        Dict("High" => (numHP, excHP), "Middle" => (numMP, excMP), "Basic" => (numBP, excBP), "Low" => (numLP, excLP))
+    end
 end
 
 # end

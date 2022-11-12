@@ -250,36 +250,45 @@ function seekFreight(checkEffect, source::World, destination::World, distance, c
 end
 
 """
-    seekAllFreight(checkEffect, source, destination, distance [, maxNavalOrScoutRank, maxSOC, shipIsArmed, userDM])
+    seekAllFreight(checkEffect, source, destination, distance [, noReturn, maxNavalOrScoutRank, maxSOC, shipIsArmed, userDM])
 
 Return all the units of cargo (and possibly mail) going from one world to another.
-
-# Examples
-```julia-repl
-julia> seekAllFreight(2, World("A53890-8"), World("A560565–8"), 2)
-Dict{String, Any} with 4 entries:
-  "Minor"      => [30, 15, 30, 30, 5, 5, 20, 25, 15, 20  …  10, 10, 15, 20, 30, 25, 30, 5, 15, 10]
-  "Incidental" => [1, 2, 2, 6, 4, 3, 2, 2, 2, 2  …  4, 3, 4, 3, 1, 5, 2, 5, 1, 4]
-  "Major"      => [60, 40, 60, 30, 50, 30, 10, 10, 50, 30, 20, 20, 60, 60, 50, 30, 50, 30, 60, 40]
-  "Mail"       => 4
-```
 
 # Arguments
 - `checkEffect`: the Effect of a given check to look for cargo
 - `source::World`: the `World` the travellers are on
 - `destination::World`: the `World` they are going to
 - `distance`: the distance (in parsecs)
+- `noReturn`: whether to return a `Dict` with the freight or print it
 - `maxNavalOrScoutRank`: the highest rank in the Navy or Scouts achieved by the travellers during character creation
 - `maxSOC`: the highest Social Standing Dice Modifier possessed by the travellers
 - `shipIsArmed`: whether or not the travellers' ship has weapons
 - `userDM`: any Dice Modifier specified by the Referee
+
+
+# Example
+```julia-repl
+julia> seekAllFreight(2, World("A434934-F"), World("A560565-8"), 2)
+Major: [30, 60, 20, 50, 60, 50, 20, 10, 40, 10, 40, 30, 30, 60, 60, 30, 50, 10, 30, 20, 60, 20, 10, 50, 10, 50, 20, 30, 10, 20, 50]
+Minor: [10, 20, 10, 30, 15, 10, 10, 10, 10, 5, 30, 10, 25, 30, 15, 15, 30, 25, 20, 15, 30, 25, 15, 15, 15, 30, 20, 25, 15, 5, 20, 5, 5, 5, 20, 30, 20, 30, 25, 5, 30, 10, 5, 5]
+Incidental: [3, 2, 3, 3, 6, 1, 5, 6, 4, 6, 6, 6, 1, 1, 1, 6, 6, 4, 4, 3, 1, 3, 4, 4, 3, 3, 5, 6, 3, 4, 2, 3, 3, 2, 1, 6, 4, 2, 1, 6, 1, 5, 5, 3, 5, 1, 3, 4, 5, 1]
+Mail: 5
+```
 """
-function seekAllFreight(checkEffect, source::World, destination::World, distance, maxNavalOrScoutRank = 0, maxSOC = 0, shipIsArmed = false, userDM = 0)    
+function seekAllFreight(checkEffect, source::World, destination::World, distance, noReturn=true, maxNavalOrScoutRank = 0, maxSOC = 0, shipIsArmed = false, userDM = 0)    
     majorCargo = seekFreight(checkEffect, source, destination, distance, "Major", userDM)
     minorCargo = seekFreight(checkEffect, source, destination, distance, "Minor", userDM)
     incidentalCargo = seekFreight(checkEffect, source, destination, distance, "Incidental", userDM)
     mail = seekMail(checkEffect, source, destination, distance, maxNavalOrScoutRank, maxSOC, shipIsArmed, userDM)
-    Dict("Major" => majorCargo, "Minor" => minorCargo, "Incidental" => incidentalCargo, "Mail" => mail)
+
+    if noReturn
+        println("Major: ", majorCargo)
+        println("Minor: ", minorCargo)
+        println("Incidental: ", incidentalCargo)
+        println("Mail: ", mail)
+    else
+        Dict("Major" => majorCargo, "Minor" => minorCargo, "Incidental" => incidentalCargo, "Mail" => mail)
+    end
 end
 
 # end
