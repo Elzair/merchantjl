@@ -1,8 +1,10 @@
-# module WorldInfo
+module WorldInfo
 
-# using Helpers: tetra
+include("helpers.jl")
 
-# export UWP, World
+using .Helpers: tetra
+
+export UWP, World
 
 """
     getTradeCodes(st, si, at, hy, pop, gov, ll, tl)
@@ -172,4 +174,4 @@ World(Merchant.UWP(0x0a, 0x05, 0x03, 0x08, 0x09, 0x01, 0x00, 0x08), "None", ["Hi
     end
 end
 
-# end
+end

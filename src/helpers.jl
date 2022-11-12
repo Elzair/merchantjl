@@ -1,6 +1,6 @@
-# module Helpers                 
+module Helpers                 
 
-# export dice, r1d6, r2d6, check, effect, tetra
+export dice, r1d6, r2d6, check, effect, tetra
 
 """
     randuint(max)
@@ -88,4 +88,4 @@ function tetra(c::Char)
     end
 end
 
-#end
+end

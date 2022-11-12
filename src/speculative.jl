@@ -1,9 +1,12 @@
-# module Speculative
+module Speculative
 
-# using Shared: TradeGood, TradeGoods
-#using WorldInfo: UWP, World
+include("shared.jl")
+include("worldinfo.jl")
 
-# export seekGoods
+using .Shared: TradeGood, TradeGoods
+using .WorldInfo: UWP, World
+
+export seekGoods
 
 """
     getAvailableGoods(source [, blackMarketSupplier])
@@ -135,4 +138,4 @@ function seekGoods(source::World, travellerMaxBrokerSkill, supplierBrokerSkill=2
 end
 
 
-# end
+end

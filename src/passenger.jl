@@ -1,12 +1,16 @@
-# module Passenger
+module Passenger
+
+include("helpers.jl")
+include("shared.jl")
+include("worldinfo.jl")
 
 using StatsBase: sample
 
-# using Helpers: dice
-# using Shared: PassageAndFreight
-# using World: UWP, World
+using .Helpers: dice
+using .Shared: PassageAndFreight
+using .WorldInfo: UWP, World
 
-# export seekAllPassengers
+export seekAllPassengers
 
 PassengerTraffic = [0, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6, 7, 8, 9, 10]
 
@@ -188,7 +192,7 @@ Basic: 32 ["Diplomat on a Mission", "Refugee - Political", "Out to See the Unive
 Low: 39 nothing
 ```
 """
-function seekAllPassengers(checkEffect, maxStewardSkill, source::World, destination::World, distance, noReturn=true, excitingPct = 0.5, passengerPct = 0.2, userDM = 0)
+function seekAllPassengers(checkEffect::Integer, maxStewardSkill::Integer, source::World, destination::World, distance::Integer, noReturn=true, excitingPct = 0.5, passengerPct = 0.2, userDM = 0)
     (numHP, excHP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "High", userDM)
     (numMP, excMP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Middle", userDM)
     (numBP, excBP) = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Basic", userDM)
@@ -204,4 +208,4 @@ function seekAllPassengers(checkEffect, maxStewardSkill, source::World, destinat
     end
 end
 
-# end
+end
