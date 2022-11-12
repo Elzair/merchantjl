@@ -1,13 +1,28 @@
-module Freight
+# module Freight
 
-using Helpers: dice, r1d6, r2d6
-using Shared: PassageAndFreight
-using WorldInfo UWP, World
+# using Helpers: dice, r1d6, r2d6
+# using Shared: PassageAndFreight
+# using WorldInfo:UWP, World
 
-export seekAllFreight
+# export seekAllFreight
 
 FreightTraffic = [ 0, 1, 1, 2, 2, 3, 3, 3, 4, 4, 4, 5, 5, 5, 6, 6, 7, 8, 9, 10 ]
 
+"""
+    seekMail(checkEffect, source, destination, distance [, maxNavalOrScoutRank, maxSOC, shipIsArmed, userDM])
+
+See if there is mail going to the destination
+
+# Arguments
+- `checkEffect`: the Effect of a given check to look for cargo
+- `source::World`: the `World` the travellers are on
+- `destination::World`: the `World` they are going to
+- `distance`: the distance (in parsecs)
+- `maxNavalOrScoutRank`: the highest rank in the Navy or Scouts achieved by the travellers during character creation
+- `maxSOC`: the highest Social Standing Dice Modifier possessed by the travellers
+- `shipIsArmed`: whether or not the travellers' ship has weapons
+- `userDM`: any Dice Modifier specified by the Referee
+"""
 function seekMail(checkEffect, source::World, destination::World, distance, maxNavalOrScoutRank = 0, maxSOC = 0, shipIsArmed = false, userDM = 0)
     sourcePopDM = if source.UWP.Population <= 1
         -4
@@ -123,7 +138,18 @@ function seekMail(checkEffect, source::World, destination::World, distance, maxN
     end
 end
 
+"""
+    seekFreight(checkEffect, source, destination, distance, cargo [, userDM])
+Seek out any cargo of the given type for a given source and desintation
 
+# Arguments
+- `checkEffect`: the Effect of a given check to look for cargo
+- `source::World`: the `World` the travellers are on
+- `destination::World`: the `World` they are going to
+- `distance`: the distance (in parsecs)
+- `cargo::String`: 'Major', 'Minor', or 'Incidental'
+- `userDM`: any Dice Modifier specified by the Referee
+"""
 function seekFreight(checkEffect, source::World, destination::World, distance, cargo::String, userDM = 0)
     cargoDM = if cargo == "Major"
         -4
@@ -223,6 +249,31 @@ function seekFreight(checkEffect, source::World, destination::World, distance, c
     end
 end
 
+"""
+    seekAllFreight(checkEffect, source, destination, distance [, maxNavalOrScoutRank, maxSOC, shipIsArmed, userDM])
+
+Return all the units of cargo (and possibly mail) going from one world to another.
+
+# Examples
+```julia-repl
+julia> seekAllFreight(2, World("A53890-8"), World("A560565–8"), 2)
+Dict{String, Any} with 4 entries:
+  "Minor"      => [30, 15, 30, 30, 5, 5, 20, 25, 15, 20  …  10, 10, 15, 20, 30, 25, 30, 5, 15, 10]
+  "Incidental" => [1, 2, 2, 6, 4, 3, 2, 2, 2, 2  …  4, 3, 4, 3, 1, 5, 2, 5, 1, 4]
+  "Major"      => [60, 40, 60, 30, 50, 30, 10, 10, 50, 30, 20, 20, 60, 60, 50, 30, 50, 30, 60, 40]
+  "Mail"       => 4
+```
+
+# Arguments
+- `checkEffect`: the Effect of a given check to look for cargo
+- `source::World`: the `World` the travellers are on
+- `destination::World`: the `World` they are going to
+- `distance`: the distance (in parsecs)
+- `maxNavalOrScoutRank`: the highest rank in the Navy or Scouts achieved by the travellers during character creation
+- `maxSOC`: the highest Social Standing Dice Modifier possessed by the travellers
+- `shipIsArmed`: whether or not the travellers' ship has weapons
+- `userDM`: any Dice Modifier specified by the Referee
+"""
 function seekAllFreight(checkEffect, source::World, destination::World, distance, maxNavalOrScoutRank = 0, maxSOC = 0, shipIsArmed = false, userDM = 0)    
     majorCargo = seekFreight(checkEffect, source, destination, distance, "Major", userDM)
     minorCargo = seekFreight(checkEffect, source, destination, distance, "Minor", userDM)
@@ -231,4 +282,4 @@ function seekAllFreight(checkEffect, source::World, destination::World, distance
     Dict("Major" => majorCargo, "Minor" => minorCargo, "Incidental" => incidentalCargo, "Mail" => mail)
 end
 
-end
+# end

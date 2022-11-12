@@ -1,9 +1,24 @@
-module WorldInfo
+# module WorldInfo
 
-using Helpers: tetra
+# using Helpers: tetra
 
-export UWP, World
+# export UWP, World
 
+"""
+    getTradeCodes(st, si, at, hy, pop, gov, ll, tl)
+
+Get the trade codes associated with a world with a given Universal World Profile
+
+# Arguments
+- `st::UInt8` Starport Quality
+- `si::UInt8` Size of World
+- `at::UInt8` Atmosphere Type
+- `hy::UInt8` Hydographics
+- `pop::UInt8` Population
+- `gov::UInt8` Type of Government
+- `ll::UInt8` Law Level
+- `tl::UInt8` Tech Level
+"""
 function getTradeCodes(st::UInt8, si::UInt8, at::UInt8, hy::UInt8, pop::UInt8, gov::UInt8, ll::UInt8, tl::UInt8)
     tradeCodes::Vector{String} = []
     
@@ -92,12 +107,20 @@ struct UWP
     Government::UInt8
     LawLevel::UInt8
     TechLevel::UInt8
-    
+
+"""
+    UWP(uwpStr)
+
+Constructor function for `UWP`
+
+# Arguments
+- `uwpStr::String` `String` representation of Universal World Profile
+"""
     function UWP(uwpStr::String)
         matches = match(r"^(?<St>[A-FX0-9])(?<Si>[A0-9])(?<At>[A-F0-9])(?<Hy>[A0-9])(?<Pop>[A-C0-9])(?<Gov>[A-F0-9])(?<LL>[A-F0-9])(?:\-)?(?<TL>[A-F0-9])$", uwpStr)
         
         if matches === nothing
-            throw(DomainError(uwp, "Argument must be a valid UWP"))
+            throw(DomainError(uwpStr, "Argument must be a valid UWP"))
         end
 
         # Get UWP
@@ -118,7 +141,21 @@ struct World
     UWP::UWP
     Zone::String
     TradeCodes::Vector{String}
-    
+
+"""
+    World(uwpStr[, zoneStr])
+
+Constructor function for `World`
+
+# Arguments
+- `uwpStr::String` `String` representation of Universal World Profile
+
+# Example
+```julia-repl
+julia> World("A538910-8")
+World(Merchant.UWP(0x0a, 0x05, 0x03, 0x08, 0x09, 0x01, 0x00, 0x08), "None", ["Hi"])
+```
+"""
     function World(uwpStr::String, zoneStr::String = "None")
         uwp = UWP(uwpStr)
 
@@ -135,4 +172,4 @@ struct World
     end
 end
 
-end
+# end

@@ -1,6 +1,6 @@
-module Shared
+# module Shared
 
-export PassageAndFreight, TradeGood, TradeGoods
+# export PassageAndFreight, TradeGood, TradeGoods
 
 PassageAndFreight = Dict(
     "High Passage" => [9000, 14000, 21000, 34000, 60000, 210000],
@@ -59,4 +59,4 @@ TradeGoods = [
     TradeGood("Exotics", "Special", (0, 1), 0, Dict(), Dict(), false)
 ]
 
-end
+# end

@@ -1,12 +1,12 @@
-module Passenger
+# module Passenger
 
 using StatsBase: sample
 
-using Helpers: dice
-using Shared: PassageAndFreight
-using World: UWP, World
+# using Helpers: dice
+# using Shared: PassageAndFreight
+# using World: UWP, World
 
-export seekAllPassengers
+# export seekAllPassengers
 
 PassengerTraffic = [0, 1, 1, 2, 2, 2, 3, 3, 3, 3, 4, 4, 4, 5, 5, 6, 7, 8, 9, 10]
 
@@ -49,6 +49,16 @@ RandomPassenger = [
     "Hijacker or Pirate Agent"
 ]
 
+"""
+    getExcitinPassengers(numPassengers, excitingPct, passengerPct)
+
+Make some of the passengers 'exciting' passengers to liven up a session
+
+# Arguments
+- `numPassengers` the total number of passengers
+- `excitingPct` the percent chance of generating 'exciting' passengers
+- `passengerPct` the percentage of passengers who are 'exciting'
+"""
 function getExcitingPassengers(numPassengers, excitingPct = 0.5, passengerPct = 0.2)
     excitingChance = rand(Float64, 1)[1]
 
@@ -58,7 +68,23 @@ function getExcitingPassengers(numPassengers, excitingPct = 0.5, passengerPct = 
     end
 end
 
-function seekPassengers(checkEffect, maxStewardSkill, source::World, destination::World, distance, passenger::String, userDM = 0)
+"""
+    seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, passenger [, userDM, excitingPct, passengerPct])
+
+Seek out passengers of a certain type for a certain route
+
+# Arguments
+- `checkEffect` the effect of a check to find passengers
+- `maxStewardSkill` the maximum level of Steward possessed by the travellers
+- `source::World` where the passengers are now
+- `destination::World` where the passengers want to go
+- `distance` the distance (in parsecs)
+- `passenger` the type of passenger ("Low", "Middle", "High", or "Basic")
+- `userDM` a Referee-specified Dice Modifier to add to the check for passengers
+- `excitingPct` the percent chance of generating 'exciting' passengers
+- `passengerPct` the percentage of passengers who are 'exciting'
+"""
+function seekPassengers(checkEffect, maxStewardSkill, source::World, destination::World, distance, passenger::String, userDM = 0, excitingPct = 0.5, passengerPct = 0.2)
     passengerDM = if passenger == "High"
         -4
     elseif passenger == "Low"
@@ -136,7 +162,32 @@ function seekPassengers(checkEffect, maxStewardSkill, source::World, destination
     (numPassengers, getExcitingPassengers(numPassengers))
 end
 
-function seekAllPassengers(checkEffect, maxStewardSkill, source::World, destination::World, distance, userDM = 0)
+"""
+    seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, passenger [, userDM, excitingPct, passengerPct])
+
+Seek out passengers of a certain type for a certain route
+
+# Arguments
+- `checkEffect` the effect of a check to find passengers
+- `maxStewardSkill` the maximum level of Steward possessed by the travellers
+- `source::World` where the passengers are now
+- `destination::World` where the passengers want to go
+- `distance` the distance (in parsecs)
+- `excitingPct` the percent chance of generating 'exciting' passengers
+- `passengerPct` the percentage of passengers who are 'exciting'
+- `userDM` a Referee-specified Dice Modifier to add to the check for passengers
+
+# Example
+```julia-repl
+julia> seekAllPassengers(2, 2, World("A434934-F"), World("A560565-8"), 2)
+Dict{String, Tuple{Int64, Any}} with 4 entries:
+  "Low"    => (42, ["Spy", "Scientist", "Possesses Something Dangerous or Illegal", "On the Run", "Causes Trouble", "Rich Noble - Complains a Lot", "Spy", "Bounty Hunter"])
+  "Middle" => (45, nothing)
+  "High"   => (17, ["Mercenary", "Gamber", "Refugee - Political"])
+  "Basic"  => (37, ["Wanderer", "Thief or Other Criminal", "Rich Noble - Eccentric", "Gamber", "Refugee - Political", "Alien", "Entertainer"])
+```
+"""
+function seekAllPassengers(checkEffect, maxStewardSkill, source::World, destination::World, distance, excitingPct = 0.5, passengerPct = 0.2, userDM = 0)
     highPassengers = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "High", userDM)
     middlePassengers = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Middle", userDM)
     basicPassengers = seekPassengers(checkEffect, maxStewardSkill, source, destination, distance, "Basic", userDM)
@@ -145,4 +196,4 @@ function seekAllPassengers(checkEffect, maxStewardSkill, source::World, destinat
     Dict("High" => highPassengers, "Middle" => middlePassengers, "Basic" => basicPassengers, "Low" => lowPassengers)
 end
 
-end
+# end
